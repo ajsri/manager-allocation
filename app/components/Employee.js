@@ -3,25 +3,38 @@ import ReactDOM from 'react-dom';
 
 class Employee extends React.Component{
   constructor(props){
-    console.log(props);
     super(props);
     this.state = {
       id: this.props.id,
       name: this.props.name,
       position: this.props.position,
       boss: this.props.boss,
+      bosses: this.props.bosses,
       cost: this.props.value,
-      editing: false
+      bossId: this.props.bossId,
+      editing: true
     }
   }
+
   edit(){
-    this.setState({editing: !this.state.editing});
+    this.setState({editing: true});
+  }
+  update(){
+    this.setState({editing: false});
+    console.dir(this.state);
+    //this.props.updateRecord(this.state);
   }
   updateName(event){
     this.setState({name: event.target.value});
   }
   updatePosition(event){
-    this.setState({position: event.target.value, editing: false});
+    this.setState({position: event.target.value});
+  }
+  updateBoss(event){
+    console.log(event.target.value);
+    this.setState({
+      bossName: event.target.value
+    });
   }
   render(){
     return(
@@ -47,7 +60,9 @@ class Employee extends React.Component{
               </div>
             }
             {this.state.editing && 
-              <select className="form-control" value={this.state.position} onChange={this.updatePosition.bind(this)}>
+              <select className="form-control" 
+                      value={this.state.position} 
+                      onChange={this.updatePosition.bind(this)}>
                 <option value="qatester">QA Tester</option>      
                 <option value="developer">Developer</option>
                 <option value="manager">Manager</option>
@@ -55,14 +70,33 @@ class Employee extends React.Component{
             }
           </div>
           <div className="col-md-3">
-            {this.state.boss}
+            {!this.state.editing &&
+              <div onClick={this.edit.bind(this)}>
+                {this.state.boss}
+              </div>
+            }
+            {this.state.editing &&
+              <select className="form-control" 
+                      onChange={this.updateBoss.bind(this)}
+                      ref="boss">
+                {this.props.bosses.map((boss, i) => {
+                  return(
+                    <option key={i} value={boss.name}>{boss.name}</option>
+                  )
+                })}
+              </select>
+            }
           </div>
           <div className="col-md-1">
-            {this.state.cost}
+            ${this.state.cost}
           </div>
           <div className="col-md-2">
             {this.state.editing && 
-              <button type="button" className="btn btn-default" onClick={this.edit.bind(this)}>Done</button>
+              <button type="button" 
+                      className="btn btn-default" 
+                      onClick={this.update.bind(this)}>
+                Done
+              </button>
             }
           </div>
         </div>

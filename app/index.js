@@ -17,10 +17,20 @@ class Allocator extends React.Component{
         manager: 300,
         developer: 1000,
         qatester: 500
-      }
+      },
+      managers: []
     }
 	}
-  updateRecord(){
+  componentDidMount(){
+    let managers = [];
+    this.state.employees.map((person, i) => {
+      if(person.type == 'manager'){
+        managers.push(person);
+      }
+    });
+    this.setState({managers: managers});
+  }
+  updateRecord(record){
     console.log(arguments);
   }
 	render(){
@@ -39,15 +49,17 @@ class Allocator extends React.Component{
         </div>
         {this.state.employees && this.state.employees.map((person, i) => {
           let bossId = person.reportsTo;
-          let bossName = this.state.employees[bossId];
+          let boss = this.state.employees[bossId];
           let cost = this.state.jobsValues[person.type];
           return(
             <Employee key={i}
                       id={person.id}
                       name={person.name} 
-                      boss={bossName.name} 
+                      boss={boss.name} 
+                      bossId={boss.id}
                       position={person.type} 
-                      value={cost} 
+                      value={cost}
+                      bosses={this.state.managers}
                       updateRecord={this.updateRecord} />
           )
           
