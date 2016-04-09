@@ -21,8 +21,8 @@ class Employee extends React.Component{
   }
   update(){
     this.setState({editing: false});
-    console.dir(this.state);
-    //this.props.updateRecord(this.state);
+    let record = this.state;
+    this.props.updateRecord(record);
   }
   updateName(event){
     this.setState({name: event.target.value});
@@ -31,12 +31,19 @@ class Employee extends React.Component{
     this.setState({position: event.target.value});
   }
   updateBoss(event){
-    console.log(event.target.value);
+    let values = event.target.value;
+    values = values.split(':');
     this.setState({
-      bossName: event.target.value
+      bossId: values[0],
+      boss: values[1]
     });
   }
   render(){
+    const jobValues = {
+      developer: 1000,
+      qatester: 500,
+      manager: 300
+    }
     return(
       <div>
         <div className="row" style={{marginBottom: 34}}>
@@ -77,18 +84,19 @@ class Employee extends React.Component{
             }
             {this.state.editing &&
               <select className="form-control" 
+                      value={`${this.state.bossId}:${this.state.boss}`}
                       onChange={this.updateBoss.bind(this)}
                       ref="boss">
                 {this.props.bosses.map((boss, i) => {
                   return(
-                    <option key={i} value={boss.name}>{boss.name}</option>
+                    <option key={i} value={`${boss.id}:${boss.name}`}>{boss.name}</option>
                   )
                 })}
               </select>
             }
           </div>
           <div className="col-md-1">
-            ${this.state.cost}
+            ${jobValues[this.state.position]}
           </div>
           <div className="col-md-2">
             {this.state.editing && 

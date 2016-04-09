@@ -5,6 +5,7 @@ import Employee from './components/Employee';
 class Allocator extends React.Component{
 	constructor(props){
 		super(props);
+    this.updateRecord = this.updateRecord.bind(this);
     this.state = {
       allocation: 0,
       employees: [
@@ -13,11 +14,6 @@ class Allocator extends React.Component{
         {id: 2, type: 'developer', name: 'Developer', reportsTo: 1},
         {id: 3, type: 'qatester', name: 'QA Tester', reportsTo: 1}
       ],
-      jobsValues: {
-        manager: 300,
-        developer: 1000,
-        qatester: 500
-      },
       managers: []
     }
 	}
@@ -29,9 +25,6 @@ class Allocator extends React.Component{
       }
     });
     this.setState({managers: managers});
-  }
-  updateRecord(record){
-    console.log(arguments);
   }
 	render(){
 		return (
@@ -50,7 +43,6 @@ class Allocator extends React.Component{
         {this.state.employees && this.state.employees.map((person, i) => {
           let bossId = person.reportsTo;
           let boss = this.state.employees[bossId];
-          let cost = this.state.jobsValues[person.type];
           return(
             <Employee key={i}
                       id={person.id}
@@ -58,15 +50,21 @@ class Allocator extends React.Component{
                       boss={boss.name} 
                       bossId={boss.id}
                       position={person.type} 
-                      value={cost}
                       bosses={this.state.managers}
-                      updateRecord={this.updateRecord} />
+                      updateRecord={this.updateRecord.bind(this)} />
           )
           
         })}
       </div>
     )
 	}
+  updateRecord(record){
+    //THIS IS A TERRIBLE TERRIBLE THING TO DO, NEVER DIRECTLY MUTATE YOUR STATE, USE SETSTATE
+    //BUT MY BRAIN IS ON FIRE AND THIS MIGHT NOT EVEN GET SEEN SO SCREW IT, HAVE SOME UPDATE
+    //IN ALL FAIRNESS THOUGH THIS IS WHERE WE'D HIT AN API, PUT IT BACK THROUGH A REDUCER AND
+    //GO FROM THERE. AND I'M NOT READY TO GET EXPRESS INVOLVED IN THIS.
+    console.log(record);
+  }
 }
 
 ReactDOM.render(<Allocator />, document.getElementById('app'));
